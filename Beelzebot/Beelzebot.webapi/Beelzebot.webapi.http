@@ -1,0 +1,6 @@
+@Beelzebot.webapi_HostAddress = http://localhost:5087
+
+GET {{Beelzebot.webapi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -21,7 +21,7 @@ namespace Beelzebot.webapi.Consumers
 
             ulong channelId = 1264954011061059584;
 
-            string message = $"IP addres at home: {context.Message.IPAddress}";
+            string message = $"IP address at home: {context.Message.IPAddress}";
 
             return _discordBotService.SendMessageToChannelAsync(channelId, message);
         }

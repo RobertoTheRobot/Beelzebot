@@ -3,6 +3,7 @@ using Beelzebot.webapi;
 using MassTransit;
 using System.Runtime.CompilerServices;
 using Beelzebot.webapi.Services;
+using Beelzebot.webapi.Queries;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,39 +22,47 @@ if (builder.Environment.IsDevelopment())
     builder.Configuration.AddUserSecrets<Program>();
 }
 
-string serviceBusConnectionString = builder.Configuration["ServiceBusConnectionString"];
+//string serviceBusConnectionString = builder.Configuration["ServiceBusConnectionString"];
+string discordBotToken = builder.Configuration["DiscordBotToken"];  // Get the Discord bot token from the configuration
 
+builder.Services.AddSingleton(provider =>
+    new DiscordBotService(
+        provider.GetRequiredService<ILogger<DiscordBotService>>(),
+        provider.GetRequiredService<IBeelzebotInteractions>(),
+        discordBotToken
+    )
+);
 
-builder.Services.AddSingleton<DiscordBotService>();
 builder.Services.AddHostedService(provider => provider.GetRequiredService<DiscordBotService>());
 
 // Add other services
 
 builder.Services.AddTransient<IBeelzebotInteractions, BeelzebotInteractions>();
+builder.Services.AddTransient<IGetPublicIPQuery, GetPublicIPQuery>();
 
 
-builder.Services.AddMassTransit(x =>
-{
-    // Consumers
-    x.AddConsumersFromNamespaceContaining<IPAddressUpdateMessageConsumer>();
 
-    // Transport
-    x.UsingAzureServiceBus((context, cfg) =>
-    {
-        cfg.UseServiceBusMessageScheduler();
-        cfg.Host(serviceBusConnectionString);
+//builder.Services.AddMassTransit(x =>
+//{
+//    // Consumers
+//    x.AddConsumer<IPAddressUpdateMessageConsumer>();
 
-        cfg.ReceiveEndpoint("ip-address-queue", e =>
-        {
-            e.ConfigureConsumeTopology = false;
-            e.UseMessageRetry(r => r.Interval(5, TimeSpan.FromSeconds(30)));
-            e.ConfigureConsumer<IPAddressUpdateMessageConsumer>(context);
-        });
+//    // Transport
+//    x.UsingAzureServiceBus((context, cfg) =>
+//    {
+//        cfg.UseServiceBusMessageScheduler();
+//        cfg.Host(serviceBusConnectionString);
 
-    });
+//        cfg.ReceiveEndpoint("ip-address-queue", e =>
+//        {
+//            e.ConfigureConsumeTopology = false;
+//            e.UseMessageRetry(r => r.Interval(5, TimeSpan.FromSeconds(30)));
+//            e.ConfigureConsumer<IPAddressUpdateMessageConsumer>(context);
+//        });
 
+//    });
+//});
 
-});
 
 builder.WebHost.ConfigureKestrel((hostingContext, serverOptions) =>
 {

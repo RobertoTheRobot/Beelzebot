@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Beelzebot.webapi.Queries;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,13 @@ namespace Beelzebot.webapi.Services
     public class BeelzebotInteractions : IBeelzebotInteractions
     {
         private readonly ILogger<BeelzebotInteractions> _logger;
-        public BeelzebotInteractions(ILogger<BeelzebotInteractions> logger)
+        private readonly IGetPublicIPQuery _getPublicIPQuery;
+
+
+        public BeelzebotInteractions(ILogger<BeelzebotInteractions> logger, IGetPublicIPQuery getPublicIPQuery)
         {
             _logger = logger;
+            _getPublicIPQuery = getPublicIPQuery;
         }
 
         public async Task<string>GetResponse(string message)
@@ -26,7 +31,8 @@ namespace Beelzebot.webapi.Services
             {
                 case "ping":
                     return "Pong!";
-                    break;
+                    case "ip":
+                        return await _getPublicIPQuery.GetPublicIP();
                 default:
                     return GetConfusedResponse();
             }

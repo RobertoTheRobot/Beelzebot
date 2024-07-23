@@ -10,13 +10,14 @@ namespace Beelzebot.webapi
         private readonly ILogger<DiscordBotService> _logger;
         private readonly IBeelzebotInteractions _beelzebotInteractions;
 
-        private readonly string _token = "{TOKEN}";
+        private readonly string _token ;
 
-        public DiscordBotService(ILogger<DiscordBotService> logger, IBeelzebotInteractions beelzebotInteractions)
+        public DiscordBotService(ILogger<DiscordBotService> logger, IBeelzebotInteractions beelzebotInteractions, string token)
         {
             _beelzebotInteractions = beelzebotInteractions;
             _client = new DiscordSocketClient();
             _logger = logger;
+            _token = token;
 
             _client.Log += LogAsync;
             _client.Ready += ReadyAsync;

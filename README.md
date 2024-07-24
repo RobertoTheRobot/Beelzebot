@@ -14,6 +14,7 @@ services:
       - "4445:4445/tcp" 
     environment:
       Secret_DiscordBotToken: '{TOKEN}'
+      Secret_OpenAIApiKey : '{API_KEY}'
       TZ: 'Europe/Amsterdam'
     restart: unless-stopped
 ```

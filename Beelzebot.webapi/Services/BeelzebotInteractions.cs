@@ -17,25 +17,44 @@ namespace Beelzebot.webapi.Services
     {
         private readonly ILogger<BeelzebotInteractions> _logger;
         private readonly IGetPublicIPQuery _getPublicIPQuery;
+        private readonly IOpenAIService _openAIService;
 
 
-        public BeelzebotInteractions(ILogger<BeelzebotInteractions> logger, IGetPublicIPQuery getPublicIPQuery)
+        public BeelzebotInteractions(ILogger<BeelzebotInteractions> logger, IGetPublicIPQuery getPublicIPQuery, IOpenAIService openAIService)
         {
             _logger = logger;
             _getPublicIPQuery = getPublicIPQuery;
+            _openAIService = openAIService;
         }
 
         public async Task<string>GetResponse(string message)
         {
-            switch (message)
+            if (message.StartsWith("ask:"))
             {
-                case "ping":
-                    return "Pong!";
+                string question = message.Substring(4);
+                try
+                {
+                    var response = await _openAIService.GetResponseToQuestionAsync(question);
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    return $"I'm sorry, I can't answer that question right now. \n {ex.Message}";
+                }
+            }
+            else
+            {
+                switch (message)
+                {
+                    case "ping":
+                        return "Pong!";
                     case "ip":
                         return await _getPublicIPQuery.GetPublicIP();
-                default:
-                    return GetConfusedResponse();
+                    default:
+                        return GetConfusedResponse();
+                }
             }
+            
         }
 
 

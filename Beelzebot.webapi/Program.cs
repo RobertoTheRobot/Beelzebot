@@ -24,6 +24,7 @@ if (builder.Environment.IsDevelopment())
 
 //string serviceBusConnectionString = builder.Configuration["ServiceBusConnectionString"];
 string discordBotToken = builder.Configuration["DiscordBotToken"];  // Get the Discord bot token from the configuration
+string openApiApiKey = builder.Configuration["OpenAIApiKey"];
 
 builder.Services.AddSingleton(provider =>
     new DiscordBotService(
@@ -40,6 +41,11 @@ builder.Services.AddHostedService(provider => provider.GetRequiredService<Discor
 builder.Services.AddTransient<IBeelzebotInteractions, BeelzebotInteractions>();
 builder.Services.AddTransient<IGetPublicIPQuery, GetPublicIPQuery>();
 
+// Register OpenAIService with dependencies
+builder.Services.AddTransient<IOpenAIService>(provider =>
+{    
+    return new OpenAIService(openApiApiKey, provider.GetRequiredService<ILogger<OpenAIService>>());
+});
 
 
 //builder.Services.AddMassTransit(x =>

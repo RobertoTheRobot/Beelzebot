@@ -7,5 +7,21 @@ namespace Beelzebot.webapi.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly ILogger<ValuesController> _logger;
+
+        public ValuesController(ILogger<ValuesController> logger)
+        {
+            _logger = logger;
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            _logger.LogInformation("Get request...");
+            // do something
+            return Ok();
+        }
+
     }
 }

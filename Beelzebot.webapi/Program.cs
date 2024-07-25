@@ -1,7 +1,4 @@
-using Beelzebot.webapi.Consumers;
 using Beelzebot.webapi;
-using MassTransit;
-using System.Runtime.CompilerServices;
 using Beelzebot.webapi.Services;
 using Beelzebot.webapi.Queries;
 
@@ -47,27 +44,13 @@ builder.Services.AddTransient<IOpenAIService>(provider =>
     return new OpenAIService(openApiApiKey, provider.GetRequiredService<ILogger<OpenAIService>>());
 });
 
-
-//builder.Services.AddMassTransit(x =>
-//{
-//    // Consumers
-//    x.AddConsumer<IPAddressUpdateMessageConsumer>();
-
-//    // Transport
-//    x.UsingAzureServiceBus((context, cfg) =>
-//    {
-//        cfg.UseServiceBusMessageScheduler();
-//        cfg.Host(serviceBusConnectionString);
-
-//        cfg.ReceiveEndpoint("ip-address-queue", e =>
-//        {
-//            e.ConfigureConsumeTopology = false;
-//            e.UseMessageRetry(r => r.Interval(5, TimeSpan.FromSeconds(30)));
-//            e.ConfigureConsumer<IPAddressUpdateMessageConsumer>(context);
-//        });
-
-//    });
-//});
+//Logging with Seq
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddSeq(        
+        serverUrl: builder.Configuration["Seq:ServerUrl"],
+        apiKey: builder.Configuration["SecApiKey"]);
+});
 
 
 builder.WebHost.ConfigureKestrel((hostingContext, serverOptions) =>

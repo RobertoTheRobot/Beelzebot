@@ -24,6 +24,7 @@
             try
             {
                 string response = await _httpClient.GetStringAsync(url);
+                _logger.LogInformation("Public IP address: {PublicIP}", response);
                 return response;
             }
             catch(Exception ex)

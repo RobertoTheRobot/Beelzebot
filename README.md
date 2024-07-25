@@ -15,6 +15,7 @@ services:
     environment:
       Secret_DiscordBotToken: '{TOKEN}'
       Secret_OpenAIApiKey : '{API_KEY}'
+      Secret_SecApiKey : '{SEQ_API_KEY}'
       TZ: 'Europe/Amsterdam'
     restart: unless-stopped
 ```

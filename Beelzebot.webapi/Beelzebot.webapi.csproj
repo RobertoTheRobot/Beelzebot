@@ -10,9 +10,14 @@
 
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="3.15.3" />
-    <PackageReference Include="MassTransit.Azure.ServiceBus.Core" Version="8.2.3" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="Seq.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Consumers\" />
+    <Folder Include="Contracts\" />
   </ItemGroup>
 
 </Project>

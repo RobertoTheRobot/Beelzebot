@@ -29,16 +29,22 @@ namespace Beelzebot.webapi.Services
 
         public async Task<string>GetResponse(string message)
         {
+            _logger.LogInformation("Received message: {Message}", message);
+
             if (message.StartsWith("ask:"))
             {
                 string question = message.Substring(4);
+                _logger.LogInformation("Received question for OpenAI: {Question}", question);
+
                 try
                 {
                     var response = await _openAIService.GetResponseToQuestionAsync(question);
+                    _logger.LogInformation("Response from OpenAI: {Response}", response);
                     return response;
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex, "Error getting response from OpenAI");
                     return $"I'm sorry, I can't answer that question right now. \n {ex.Message}";
                 }
             }
@@ -47,10 +53,13 @@ namespace Beelzebot.webapi.Services
                 switch (message)
                 {
                     case "ping":
+                        _logger.LogInformation("Responding to ping request");
                         return "Pong!";
                     case "ip":
+                        _logger.LogInformation("Responding to IP request");
                         return await _getPublicIPQuery.GetPublicIP();
                     default:
+                        _logger.LogInformation("Responding with confused response");
                         return GetConfusedResponse();
                 }
             }
